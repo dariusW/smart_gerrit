@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+ <PreferenceCategory
+   android:summary="Fast configuration"
+   android:title="Application configuration" >
+  <EditTextPreference
+     android:key="username"
+     android:summary="Please enter your login username"
+     android:title="Username" />
+  <EditTextPreference
+     android:key="password"
+     android:summary="Enter your password"
+     android:title="Password" />
+  <EditTextPreference
+     android:key="host"
+     android:summary="Please set host address"
+     android:title="Host" />
+ </PreferenceCategory> 
+ 
+</PreferenceScreen>
