@@ -7,9 +7,10 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +28,10 @@
         </activity>
         <activity
             android:name="pl.agh.smart_gerrit.SettingActivity"
+            android:parentActivityName="pl.agh.smart_gerrit.HomeViewActivity" >
+        </activity>
+        <activity
+            android:name="pl.agh.smart_gerrit.projects.ProjectActivity"
             android:parentActivityName="pl.agh.smart_gerrit.HomeViewActivity" >
         </activity>
     </application>

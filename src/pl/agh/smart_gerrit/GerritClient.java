@@ -9,12 +9,16 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.json.parsers.JSONParser;
-import com.json.parsers.JsonParserFactory;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 public class GerritClient {
+
+	private static final int DEFAULT_RETRY = 5;
+
+	private static final int DEFAULT_TIMEOUT = 60000;
 
 	private GerritClient(Context context) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -32,10 +36,12 @@ public class GerritClient {
 		if (useAuthentication) {
 			client.setBasicAuth(username, password);
 		}
+		client.setTimeout(DEFAULT_TIMEOUT);
+		client.setMaxRetriesAndTimeout(DEFAULT_RETRY, DEFAULT_TIMEOUT);
 	}
 
 	public static abstract class AsyncResponseHandler {
-		public abstract void onSuccess(Map<String, String> jsonObject);
+		public abstract void onSuccess(JsonElement json);
 
 		public void onFailure(int status, Header[] header, byte[] content,
 				Throwable e) {
@@ -52,6 +58,7 @@ public class GerritClient {
 	private boolean useAuthentication = false;
 	private AsyncHttpClient client;
 	public static boolean debug = true;
+	public static boolean readableJSON = false;
 
 	public static GerritClient getInstance(Context context) {
 		GerritClient client = new GerritClient(context);
@@ -59,9 +66,25 @@ public class GerritClient {
 		return client;
 	}
 
-	public void get(String subUrl, final AsyncResponseHandler handler) {
+	public void get(String subUrl, Map<String, String> params,
+			final AsyncResponseHandler handler) {
 		String url = host + (useAuthentication ? AUTH_URL_SUFFIX : "") + "/"
-				+ subUrl;
+				+ subUrl + "/";
+
+		boolean firtParam = true;
+		for (String key : params.keySet()) {
+			url += (firtParam ? "?" : "&") + key;
+			if (firtParam)
+				firtParam = !firtParam;
+			if (params.get(key) != null) {
+				url += "=" + params.get(key);
+			}
+		}
+		if (!readableJSON) {
+			url += (firtParam ? "?" : "&") + "pp=0";
+		}
+		if (debug)
+			Log.d("GerritClient", url);
 
 		client.get(url, new AsyncHttpResponseHandler() {
 			@Override
@@ -70,13 +93,10 @@ public class GerritClient {
 					Log.i("GerritClient", response);
 				}
 				response = response.substring(5);
-				JsonParserFactory factory = JsonParserFactory.getInstance();
-				JSONParser parser = factory.newJsonParser();
-				@SuppressWarnings("unchecked")
-				Map<String, String> jsonData = (Map<String, String>) parser
-						.parseJson(response);
+				JsonParser jsonParser = new JsonParser();
+				JsonElement jsonElement = jsonParser.parse(response);
 
-				handler.onSuccess(jsonData);
+				handler.onSuccess(jsonElement);
 			}
 
 			@Override
