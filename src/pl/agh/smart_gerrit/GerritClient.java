@@ -66,11 +66,16 @@ public class GerritClient {
 		return client;
 	}
 
-	public void get(String subUrl, Map<String, String> params,
+	public void get(GerritClientQuery queryBuilder,
 			final AsyncResponseHandler handler) {
+		String subUrl = "";
+		for(String part: queryBuilder.getUrl()){
+			subUrl+=part+"/";
+		}
 		String url = host + (useAuthentication ? AUTH_URL_SUFFIX : "") + "/"
-				+ subUrl + "/";
+				+ subUrl;
 
+		Map<String,String> params = queryBuilder.getParams();
 		boolean firtParam = true;
 		for (String key : params.keySet()) {
 			url += (firtParam ? "?" : "&") + key;

@@ -59,7 +59,7 @@ public class ProjectsViewFragment extends ListFragment {
 	@Override
 	public void onStart() {
 
-		handler.post(new GetProjectsTask(ProjectParamBuilder.getBuider()));
+		handler.post(new GetProjectsTask(ProjectQueryBuilder.getBuider(ProjectQueryBuilder.Type.LIST)));
 
 		getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -73,8 +73,8 @@ public class ProjectsViewFragment extends ListFragment {
 					int visibleItemCount, int totalItemCount) {
 				int loadedItems = firstVisibleItem + visibleItemCount;
 				if ((loadedItems == totalItemCount) && !isLoading) {
-					handler.post(new GetProjectsTask(ProjectParamBuilder
-							.getBuider().setOffset(totalItemCount)));
+					handler.post(new GetProjectsTask(ProjectQueryBuilder
+							.getBuider(ProjectQueryBuilder.Type.LIST).setOffset(totalItemCount)));
 
 				}
 
@@ -103,9 +103,9 @@ public class ProjectsViewFragment extends ListFragment {
 
 	class GetProjectsTask implements Runnable {
 
-		private final ProjectParamBuilder.ParamHolder params;
+		private final ProjectQueryBuilder.Query params;
 
-		public GetProjectsTask(ProjectParamBuilder.ParamHolder params) {
+		public GetProjectsTask(ProjectQueryBuilder.Query params) {
 			this.params = params;
 		}
 
@@ -115,24 +115,22 @@ public class ProjectsViewFragment extends ListFragment {
 			if (getArguments().getString(QUERY) != null) {
 				this.params.setPrefix(getArguments().getString(QUERY).trim());
 			}
-			client.get("projects", this.params.getParams(),
-					new GerritClient.AsyncResponseHandler() {
+			client.get(this.params, new GerritClient.AsyncResponseHandler() {
 
-						@Override
-						public void onSuccess(JsonElement json) {
-							Gson gson = new Gson();
-							for (Entry<String, JsonElement> projectEntry : json
-									.getAsJsonObject().entrySet()) {
-								ProjectModel model = gson.fromJson(
-										projectEntry.getValue(),
-										ProjectModel.class);
-								adapter.add(model);
+				@Override
+				public void onSuccess(JsonElement json) {
+					Gson gson = new Gson();
+					for (Entry<String, JsonElement> projectEntry : json
+							.getAsJsonObject().entrySet()) {
+						ProjectModel model = gson.fromJson(
+								projectEntry.getValue(), ProjectModel.class);
+						adapter.add(model);
 
-							}
-							isLoading = false;
-							Log.i("GetProjectsTask", json.toString());
-						}
-					});
+					}
+					isLoading = false;
+					Log.i("GetProjectsTask", json.toString());
+				}
+			});
 
 		}
 
