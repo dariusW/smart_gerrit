@@ -20,20 +20,23 @@ public class GerritClient {
 
 	private static final int DEFAULT_TIMEOUT = 60000;
 
-	private GerritClient(Context context) {
+	private GerritClient( Context context ) {
 		prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		host = prefs.getString("host", "").trim();
+		if ( !host.startsWith("http://") && !host.startsWith("https://") ) {
+			host = "http://" + host;
+		}
 		// TODO: check validity of format "https://example.com" format expected
 
 		username = prefs.getString("username", "");
 		password = prefs.getString("password", "");
 
-		if (!username.equals("") && !password.equals("")) {
+		if ( !username.equals("") && !password.equals("") ) {
 			useAuthentication = true;
 		}
 
 		client = new AsyncHttpClient();
-		if (useAuthentication) {
+		if ( useAuthentication ) {
 			client.setBasicAuth(username, password);
 		}
 		client.setTimeout(DEFAULT_TIMEOUT);
@@ -41,10 +44,10 @@ public class GerritClient {
 	}
 
 	public static abstract class AsyncResponseHandler {
-		public abstract void onSuccess(JsonElement json);
 
-		public void onFailure(int status, Header[] header, byte[] content,
-				Throwable e) {
+		public abstract void onSuccess( JsonElement json );
+
+		public void onFailure( int status, Header[] header, byte[] content, Throwable e ) {
 			Log.w("GerritClient", e.getMessage());
 		}
 	}
@@ -60,41 +63,40 @@ public class GerritClient {
 	public static boolean debug = true;
 	public static boolean readableJSON = false;
 
-	public static GerritClient getInstance(Context context) {
+	public static GerritClient getInstance( Context context ) {
 		GerritClient client = new GerritClient(context);
 
 		return client;
 	}
 
-	public void get(GerritClientQuery queryBuilder,
-			final AsyncResponseHandler handler) {
+	public void get( GerritClientQuery queryBuilder, final AsyncResponseHandler handler ) {
 		String subUrl = "";
-		for(String part: queryBuilder.getUrl()){
-			subUrl+=part+"/";
+		for ( String part : queryBuilder.getUrl() ) {
+			subUrl += part + "/";
 		}
-		String url = host + (useAuthentication ? AUTH_URL_SUFFIX : "") + "/"
-				+ subUrl;
+		String url = host + (useAuthentication ? AUTH_URL_SUFFIX : "") + "/" + subUrl;
 
-		Map<String,String> params = queryBuilder.getParams();
+		Map<String, String> params = queryBuilder.getParams();
 		boolean firtParam = true;
-		for (String key : params.keySet()) {
+		for ( String key : params.keySet() ) {
 			url += (firtParam ? "?" : "&") + key;
-			if (firtParam)
+			if ( firtParam )
 				firtParam = !firtParam;
-			if (params.get(key) != null) {
+			if ( params.get(key) != null ) {
 				url += "=" + params.get(key);
 			}
 		}
-		if (!readableJSON) {
+		if ( !readableJSON ) {
 			url += (firtParam ? "?" : "&") + "pp=0";
 		}
-		if (debug)
+		if ( debug )
 			Log.d("GerritClient", url);
 
 		client.get(url, new AsyncHttpResponseHandler() {
+
 			@Override
-			public void onSuccess(String response) {
-				if (debug) {
+			public void onSuccess( String response ) {
+				if ( debug ) {
 					Log.i("GerritClient", response);
 				}
 				response = response.substring(5);
@@ -105,8 +107,7 @@ public class GerritClient {
 			}
 
 			@Override
-			public void onFailure(int status, Header[] header, byte[] content,
-					Throwable e) {
+			public void onFailure( int status, Header[] header, byte[] content, Throwable e ) {
 				handler.onFailure(status, header, content, e);
 			}
 		});
