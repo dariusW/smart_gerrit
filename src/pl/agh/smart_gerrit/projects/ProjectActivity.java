@@ -1,10 +1,14 @@
 package pl.agh.smart_gerrit.projects;
 
-import java.util.Map.Entry;
+import org.apache.http.Header;
 
 import pl.agh.smart_gerrit.GerritClient;
 import pl.agh.smart_gerrit.GerritClient.AsyncResponseHandler;
+import pl.agh.smart_gerrit.GerritClientQuery;
 import pl.agh.smart_gerrit.R;
+import pl.agh.smart_gerrit.changes.ChangesQueryBuilder;
+import pl.agh.smart_gerrit.changes.CommitStatus;
+import pl.agh.smart_gerrit.changes.model.ChangeModel;
 import pl.agh.smart_gerrit.projects.ProjectQueryBuilder.Query;
 import pl.agh.smart_gerrit.projects.ProjectQueryBuilder.Type;
 import android.app.Activity;
@@ -108,6 +112,43 @@ public class ProjectActivity extends Activity {
 				}
 			});
 
+			final GerritClientQuery query3 = ChangesQueryBuilder.getBuider()
+					.setProject(id).setStatus(CommitStatus.OPEN);
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					client.get(query3, new AsyncResponseHandler() {
+						public void onSuccess(JsonElement json) {
+							Gson gson = new Gson();
+							StringBuilder changesTextBuilder = new StringBuilder();
+							for (JsonElement branchEntry : json
+									.getAsJsonArray()) {
+								ChangeModel model = gson.fromJson(branchEntry,
+										ChangeModel.class);
+								changesTextBuilder.append(model.getSubject());
+								changesTextBuilder.append(" | by ");
+								changesTextBuilder.append(model.getOwner().getName());
+								changesTextBuilder.append("\n");
+
+							}
+							
+
+							final String changesText = changesTextBuilder.toString();
+							runOnUiThread(new Runnable() {
+
+								@Override
+								public void run() {
+
+									((TextView) findViewById(R.id.project_view_changes))
+											.setText(changesText);
+								}
+							});
+						};
+					});
+
+				}
+			});
 		} else {
 			finishActivity(0);
 		}
