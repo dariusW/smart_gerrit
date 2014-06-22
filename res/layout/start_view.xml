@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:columnCount="1" >
+
+    <EditText
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:ems="10"
+        android:hint="Gerrin login"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="dariusW" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/passwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/login"
+        android:layout_below="@+id/login"
+        android:ems="10"
+        android:hint="HTTP Password"
+        android:inputType="textPassword"
+        android:text="6V5sf/BrX17B" />
+
+    <EditText
+        android:id="@+id/host"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/passwd"
+        android:layout_below="@+id/passwd"
+        android:ems="10"
+        android:hint="Gerrit host URL"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="https://review.gerrithub.io/" />
+
+    <Button
+        android:id="@+id/start_login_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/host"
+        android:layout_below="@+id/host"
+        android:layout_marginTop="22dp"
+        android:text="Login" />
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/login"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:src="@drawable/diffy" />
+
+</RelativeLayout>
