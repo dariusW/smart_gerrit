@@ -1,5 +1,7 @@
 package pl.agh.smart_gerrit.changes.model;
 
+import java.net.URLDecoder;
+
 import com.google.gson.annotations.Expose;
 
 
@@ -44,7 +46,7 @@ public class ChangeModel {
 	}
 
 	public String getId() {
-	return id;
+	return decode(id);
 	}
 
 	public void setId(String id) {
@@ -52,7 +54,7 @@ public class ChangeModel {
 	}
 
 	public String getProject() {
-	return project;
+	return decode(project);
 	}
 
 	public void setProject(String project) {
@@ -153,5 +155,17 @@ public class ChangeModel {
 
 	public void setOwner(Owner owner) {
 	this.owner = owner;
+	}
+	
+
+	private static String decode(String encodecTxt) {
+		if (encodecTxt == null)
+			return encodecTxt;
+		try {
+			return URLDecoder.decode(encodecTxt, "UTF-8");
+		} catch (Exception e) {
+			return encodecTxt;
+		}
+
 	}
 }

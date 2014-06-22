@@ -1,24 +1,23 @@
-package pl.agh.smart_gerrit.projects;
-
-import java.util.Map.Entry;
+package pl.agh.smart_gerrit.changes;
 
 import pl.agh.smart_gerrit.GerritClient;
 import pl.agh.smart_gerrit.HomeViewActivity;
-import pl.agh.smart_gerrit.R;
-import pl.agh.smart_gerrit.changes.ChangesViewFragment;
+import pl.agh.smart_gerrit.changes.model.ChangeModel;
 import android.app.Activity;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
-public class ProjectsViewFragment extends ListFragment {
+public class ChangesViewFragment extends ListFragment {
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -29,42 +28,42 @@ public class ProjectsViewFragment extends ListFragment {
 	/**
 	 * Returns a new instance of this fragment for the given section number.
 	 */
-	public static ProjectsViewFragment newInstance() {
-		ProjectsViewFragment fragment = new ProjectsViewFragment();
+	public static ChangesViewFragment newInstance() {
+		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
-		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 1);
+		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 2);
 		fragment.setArguments(args);
 		return fragment;
 	}
 
-	public static ProjectsViewFragment newInstance(String query) {
-		ProjectsViewFragment fragment = new ProjectsViewFragment();
+	public static ChangesViewFragment newInstance(String query) {
+		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
-		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 1);
+		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 2);
 		args.putString(QUERY, query);
 		fragment.setArguments(args);
 		return fragment;
 	}
 
-	public ProjectsViewFragment() {
+	public ChangesViewFragment() {
 
 	}
 
-	private ProjectsListAdapter adapter;
+	private ChangesListAdapter adapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		adapter = new ProjectsListAdapter(getActivity(), getId());
+		adapter = new ChangesListAdapter(getActivity(), getId());
 		setListAdapter(adapter);
 		client = GerritClient.getInstance(getActivity());
-
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onStart() {
 
-		handler.post(new GetProjectsTask(ProjectQueryBuilder.getBuider(ProjectQueryBuilder.Type.LIST)));
+		if (!isLoading)
+			handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(CommitStatus.OPEN)));
 
 		getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
 
@@ -75,11 +74,12 @@ public class ProjectsViewFragment extends ListFragment {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				int loadedItems = firstVisibleItem + visibleItemCount;
-				if ((loadedItems == totalItemCount) && !isLoading) {
-					handler.post(new GetProjectsTask(ProjectQueryBuilder.getBuider(ProjectQueryBuilder.Type.LIST).setOffset(totalItemCount)));
+				//int loadedItems = firstVisibleItem + visibleItemCount;
+				//if ((loadedItems == totalItemCount) && !isLoading) {
+					// handler.post(new
+					// GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(CommitStatus.OPEN)));
 
-				}
+				//}
 
 			}
 
@@ -90,17 +90,20 @@ public class ProjectsViewFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		((HomeViewActivity) activity).onSectionAttached(getArguments().getInt(HomeViewActivity.ARG_SECTION_NUMBER));
+		((HomeViewActivity) activity).onSectionAttached(2);
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		ProjectModel clickedModel = adapter.getItem(position);
-		((HomeViewActivity) getActivity()).setCurrentPosition(1);
-		getActivity().getFragmentManager().beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(clickedModel.getId())).commit();
+		ChangeModel clickedModel = adapter.getItem(position);
 
+		// TODO: add change Activity
 		//Intent intent = new Intent(getActivity(), ProjectActivity.class);
-
 		//intent.putExtra("id", clickedModel.getId());
 		//getActivity().startActivityForResult(intent, 1);
 	}
@@ -109,11 +112,11 @@ public class ProjectsViewFragment extends ListFragment {
 
 	private volatile boolean isLoading = false;
 
-	class GetProjectsTask implements Runnable {
+	class GetChangeTask implements Runnable {
 
-		private final ProjectQueryBuilder.Query params;
+		private final ChangesQueryBuilder.Query params;
 
-		public GetProjectsTask(ProjectQueryBuilder.Query params) {
+		public GetChangeTask(ChangesQueryBuilder.Query params) {
 			this.params = params;
 		}
 
@@ -122,7 +125,7 @@ public class ProjectsViewFragment extends ListFragment {
 			if (!isLoading) {
 				isLoading = true;
 				if (getArguments().getString(QUERY) != null) {
-					this.params.setPrefix(getArguments().getString(QUERY).trim());
+					this.params.setProject(getArguments().getString(QUERY).trim());
 
 					getActivity().getActionBar().setSubtitle(getArguments().getString(QUERY).trim());
 				}
@@ -132,13 +135,13 @@ public class ProjectsViewFragment extends ListFragment {
 					public void onSuccess(JsonElement json) {
 						Gson gson = new Gson();
 
-						for (Entry<String, JsonElement> projectEntry : json.getAsJsonObject().entrySet()) {
-							ProjectModel model = gson.fromJson(projectEntry.getValue(), ProjectModel.class);
+						for (JsonElement changeObject : json.getAsJsonArray()) {
+							ChangeModel model = gson.fromJson(changeObject.getAsJsonObject(), ChangeModel.class);
 							adapter.add(model);
 
 						}
 						isLoading = false;
-						Log.i("GetProjectsTask", json.toString());
+						Log.i("GetChangeTask", json.toString());
 					}
 				});
 			}

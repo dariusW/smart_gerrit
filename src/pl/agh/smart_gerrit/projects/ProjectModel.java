@@ -1,6 +1,7 @@
 package pl.agh.smart_gerrit.projects;
 
 import java.util.List;
+import java.net.URLDecoder;
 
 public class ProjectModel {
 	private String id;
@@ -11,11 +12,11 @@ public class ProjectModel {
 	private String state;
 
 	public String getName() {
-		return name;
+		return decode(name);
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = decode(name);
 	}
 
 	public List<String> getWebLinks() {
@@ -27,11 +28,11 @@ public class ProjectModel {
 	}
 
 	public String getParent() {
-		return parent;
+		return decode(parent);
 	}
 
 	public void setParent(String parent) {
-		this.parent = parent;
+		this.parent = decode(parent);
 	}
 
 	public String getState() {
@@ -43,18 +44,29 @@ public class ProjectModel {
 	}
 
 	public String getDescription() {
-		return description;
+		return decode(description);
 	}
 
 	public void setDescription(String description) {
-		this.description = description;
+		this.description = decode(description);
 	}
 
 	public String getId() {
-		return id;
+		return decode(id);
 	}
 
 	public void setId(String id) {
-		this.id = id;
+		this.id = decode(id);
+	}
+
+	private static String decode(String encodecTxt) {
+		if (encodecTxt == null)
+			return encodecTxt;
+		try {
+			return URLDecoder.decode(encodecTxt, "UTF-8");
+		} catch (Exception e) {
+			return encodecTxt;
+		}
+
 	}
 }

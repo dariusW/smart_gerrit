@@ -14,8 +14,8 @@ public class ChangesQueryBuilder {
 
 	static {
 		DEFAULT_PARAM_MAP = new TreeMap<String, String>();
-		DEFAULT_PARAM_MAP.put("n", "25"); // number of changes
-		DEFAULT_PARAM_MAP.put("S", "0"); // offset
+		DEFAULT_PARAM_MAP.put("n", "1"); // number of changes
+		//DEFAULT_PARAM_MAP.put("S", "0"); // offset
 		
 
 		DEFAULT_URL= new ArrayList<String>();

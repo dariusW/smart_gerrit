@@ -43,7 +43,7 @@
         android:lines="1"
         android:maxLines="1"
         android:singleLine="true"
-        android:text="https://review.gerrithub.io/" />
+        android:text="https://review.gerrithub.io" />
 
     <Button
         android:id="@+id/start_login_btn"

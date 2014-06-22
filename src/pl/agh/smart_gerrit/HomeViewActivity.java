@@ -1,5 +1,6 @@
 package pl.agh.smart_gerrit;
 
+import pl.agh.smart_gerrit.changes.ChangesViewFragment;
 import pl.agh.smart_gerrit.projects.ProjectsViewFragment;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -13,7 +14,6 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +23,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class HomeViewActivity extends Activity implements
-		NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class HomeViewActivity extends Activity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
@@ -37,6 +36,7 @@ public class HomeViewActivity extends Activity implements
 	 * {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
+	private CharSequence mSubtitle;
 
 	private SharedPreferences prefs;
 
@@ -45,26 +45,19 @@ public class HomeViewActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home_view);
 
-		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager()
-				.findFragmentById(R.id.navigation_drawer);
+		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
 
 		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if ((prefs.getString("host", "")).equals("")) {
-			Toast.makeText(
-					this,
-					"Gerrit host URL not set! Please fell propper field in settings",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Gerrit host URL not set! Please fell propper field in settings", Toast.LENGTH_LONG).show();
 			Intent i = new Intent(this, SettingActivity.class);
 			startActivityForResult(i, 0);
 		} else if (!isNetworkAvailable()) {
-			Toast.makeText(this,
-					"Network not avaalable! Application wont work",
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Network not avaalable! Application wont work", Toast.LENGTH_LONG).show();
 		}
 
 	}
@@ -80,37 +73,30 @@ public class HomeViewActivity extends Activity implements
 		return false;
 	}
 
-	int currentPosition = 0;
-	
+	private int currentPosition = 0;
+
 	@Override
 	public void onNavigationDrawerItemSelected(int position) {
 		// update the main content by replacing fragments
 		FragmentManager fragmentManager = getFragmentManager();
-		currentPosition = position;
+		setCurrentPosition(position);
 		if (position == 0) {
-			fragmentManager
-					.beginTransaction()
-					.replace(R.id.container,
-							ProjectsViewFragment.newInstance())
-					.commit();
+			fragmentManager.beginTransaction().replace(R.id.container, ProjectsViewFragment.newInstance()).commit();
+		} else if (position == 1) {
+			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance()).commit();
 		} else {
-
-			fragmentManager
-					.beginTransaction()
-					.replace(R.id.container,
-							PlaceholderFragment.newInstance(position + 1))
-					.commit();
+			fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1)).commit();
 		}
 	}
-	
-	private void onSearchQuerySubmited(String query){
+
+	private void onSearchQuerySubmited(String query) {
 		FragmentManager fragmentManager = getFragmentManager();
-		if (currentPosition == 0) {
-			fragmentManager
-					.beginTransaction()
-					.replace(R.id.container,
-							ProjectsViewFragment.newInstance(query))
-					.commit();
+		if (searchItem != null)
+			searchItem.collapseActionView();
+		if (getCurrentPosition() == 0) {
+			fragmentManager.beginTransaction().replace(R.id.container, ProjectsViewFragment.newInstance(query)).commit();
+		} else if (getCurrentPosition() == 1) {
+			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(query)).commit();
 		}
 	}
 
@@ -126,13 +112,17 @@ public class HomeViewActivity extends Activity implements
 			mTitle = getString(R.string.title_section3);
 			break;
 		}
+		getActionBar().setSubtitle("");
+		getActionBar().setTitle(mTitle);
+		getActionBar().setDisplayShowTitleEnabled(true);
 	}
 
 	public void restoreActionBar() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
+		actionBar.setSubtitle(mSubtitle);
+		actionBar.setDisplayShowTitleEnabled(true);
 	}
 
 	private SearchView mSearchView;
@@ -146,23 +136,22 @@ public class HomeViewActivity extends Activity implements
 			getMenuInflater().inflate(R.menu.home_view, menu);
 			restoreActionBar();
 
-			MenuItem searchItem = menu.findItem(R.id.action_search);
+			searchItem = menu.findItem(R.id.action_search);
 			mSearchView = (SearchView) searchItem.getActionView();
-			mSearchView
-					.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+			mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-						@Override
-						public boolean onQueryTextSubmit(String query) {
-							onSearchQuerySubmited(query);
-							return true;
-						}
+				@Override
+				public boolean onQueryTextSubmit(String query) {
+					onSearchQuerySubmited(query);
+					return true;
+				}
 
-						@Override
-						public boolean onQueryTextChange(String newText) {
-							
-							return false;
-						}
-					});
+				@Override
+				public boolean onQueryTextChange(String newText) {
+
+					return false;
+				}
+			});
 
 			return true;
 
@@ -184,15 +173,25 @@ public class HomeViewActivity extends Activity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+	public int getCurrentPosition() {
+		return currentPosition;
+	}
+
+	public void setCurrentPosition(int currentPosition) {
+		this.currentPosition = currentPosition;
+	}
+
+	/**
+	 * The fragment argument representing the section number for this fragment.
+	 */
+	public static final String ARG_SECTION_NUMBER = "section_number";
+
+	private MenuItem searchItem;
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
-		/**
-		 * The fragment argument representing the section number for this
-		 * fragment.
-		 */
-		private static final String ARG_SECTION_NUMBER = "section_number";
 
 		/**
 		 * Returns a new instance of this fragment for the given section number.
@@ -209,22 +208,17 @@ public class HomeViewActivity extends Activity implements
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_home_view,
-					container, false);
-			TextView textView = (TextView) rootView
-					.findViewById(R.id.section_label);
-			textView.setText(Integer.toString(getArguments().getInt(
-					ARG_SECTION_NUMBER)));
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+			View rootView = inflater.inflate(R.layout.fragment_home_view, container, false);
+			TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+			textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 			return rootView;
 		}
 
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);
-			((HomeViewActivity) activity).onSectionAttached(getArguments()
-					.getInt(ARG_SECTION_NUMBER));
+			((HomeViewActivity) activity).onSectionAttached(getArguments().getInt(ARG_SECTION_NUMBER));
 		}
 	}
 
