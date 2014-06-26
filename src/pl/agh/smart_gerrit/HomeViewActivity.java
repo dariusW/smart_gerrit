@@ -1,6 +1,7 @@
 package pl.agh.smart_gerrit;
 
 import pl.agh.smart_gerrit.changes.ChangesViewFragment;
+import pl.agh.smart_gerrit.changes.ChangesViewFragment.Type;
 import pl.agh.smart_gerrit.projects.ProjectsViewFragment;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -84,8 +85,12 @@ public class HomeViewActivity extends Activity implements NavigationDrawerFragme
 			fragmentManager.beginTransaction().replace(R.id.container, ProjectsViewFragment.newInstance()).commit();
 		} else if (position == 1) {
 			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance()).commit();
+		} else if (position == 2) {
+			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(ChangesViewFragment.Type.OUT)).commit();
+		} else if (position == 3) {
+			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(ChangesViewFragment.Type.IN)).commit();
 		} else {
-			fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(position + 1)).commit();
+			fragmentManager.beginTransaction().replace(R.id.container, PlaceholderFragment.newInstance(666)).commit();
 		}
 	}
 
@@ -97,6 +102,10 @@ public class HomeViewActivity extends Activity implements NavigationDrawerFragme
 			fragmentManager.beginTransaction().replace(R.id.container, ProjectsViewFragment.newInstance(query)).commit();
 		} else if (getCurrentPosition() == 1) {
 			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(query)).commit();
+		} else if (getCurrentPosition() == 2) {
+			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(query, Type.OUT)).commit();
+		} else if (getCurrentPosition() == 3) {
+			fragmentManager.beginTransaction().replace(R.id.container, ChangesViewFragment.newInstance(query, Type.IN)).commit();
 		}
 	}
 
@@ -110,6 +119,9 @@ public class HomeViewActivity extends Activity implements NavigationDrawerFragme
 			break;
 		case 3:
 			mTitle = getString(R.string.title_section3);
+			break;
+		case 4:
+			mTitle = getString(R.string.title_section4);
 			break;
 		}
 		getActionBar().setSubtitle("");

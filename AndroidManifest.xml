@@ -27,16 +27,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="pl.agh.smart_gerrit.HomeViewActivity"
+            android:name="HomeViewActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="pl.agh.smart_gerrit.SettingActivity"
-            android:parentActivityName="pl.agh.smart_gerrit.HomeViewActivity" >
+            android:name="SettingActivity"
+            android:parentActivityName="HomeViewActivity" >
         </activity>
         <activity
-            android:name="pl.agh.smart_gerrit.projects.ProjectActivity"
-            android:parentActivityName="pl.agh.smart_gerrit.HomeViewActivity" >
+            android:name="ProjectActivity"
+            android:parentActivityName="HomeViewActivity" >
         </activity>
     </application>
 

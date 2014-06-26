@@ -30,6 +30,7 @@ public class ChangesQueryBuilder {
 		private Map<String, String> params = new TreeMap<String, String>();
 		private CommitStatus status;
 		private String owner;
+		private String reviewer;
 		private String project;
 
 		private Query() {
@@ -41,20 +42,31 @@ public class ChangesQueryBuilder {
 			StringBuilder queryBuilder = new StringBuilder();
 			boolean firstArrtibute = true;
 			if(status!=null){
-				firstArrtibute=false;
-				queryBuilder.append("status:");
-				queryBuilder.append(status.name().toLowerCase());
+				firstArrtibute = appendAttribute(queryBuilder, firstArrtibute, "status", status.name().toLowerCase());
 			}
 			if(project!=null){
-				if(firstArrtibute==false){
-					firstArrtibute = false;
-					queryBuilder.append("+");
-				}
-				queryBuilder.append("project:");
-				queryBuilder.append(project);
+				firstArrtibute = appendAttribute(queryBuilder, firstArrtibute, "project", project);
+			}
+			if(owner!=null){
+				firstArrtibute = appendAttribute(queryBuilder, firstArrtibute, "owner", owner);
+			}
+			if(reviewer!=null){
+				firstArrtibute = appendAttribute(queryBuilder, firstArrtibute, "reviewer", reviewer);
 			}
 			params.put("q",queryBuilder.toString());
 			return params;
+		}
+
+		private boolean appendAttribute(StringBuilder queryBuilder,
+				boolean firstArrtibute, String type, String value) {
+			if(firstArrtibute==false){
+				queryBuilder.append("+");
+			}
+			firstArrtibute = false;
+			queryBuilder.append(type);
+			queryBuilder.append(":");
+			queryBuilder.append(value);
+			return firstArrtibute;
 		}
 
 		public Query setProject(String projectWithParent){
@@ -71,7 +83,28 @@ public class ChangesQueryBuilder {
 			this.status = status;
 			return this;
 		}
+		
+		public Query setOwner(String owner) {
+			this.owner = owner;
+			return this;
+		}
 
+		public Query setMy() {
+			this.owner = "self";
+			return this;
+		}
+
+		public Query setReviewer(String reviewer) {
+			this.reviewer = reviewer;
+			return this;
+		}
+
+		public Query setAssignedToMe() {
+			this.reviewer = "self";
+			return this;
+		}
+		
+		
 		@Override
 		public List<String> getUrl() {
 			return DEFAULT_URL;

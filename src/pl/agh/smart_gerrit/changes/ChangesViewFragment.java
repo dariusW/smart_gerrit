@@ -18,10 +18,16 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 public class ChangesViewFragment extends ListFragment {
+	
+	public static enum Type {
+		ALL, OUT, IN
+	}
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
 	private static final String QUERY = "q";
+
+	private static final String ARG_LIST_TYPE = "list_type";
 
 	private GerritClient client;
 
@@ -36,10 +42,29 @@ public class ChangesViewFragment extends ListFragment {
 		return fragment;
 	}
 
+	public static ChangesViewFragment newInstance(Type type) {
+		ChangesViewFragment fragment = new ChangesViewFragment();
+		Bundle args = new Bundle();
+		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal()+2);
+		args.putString(ARG_LIST_TYPE, type.name());
+		fragment.setArguments(args);
+		return fragment;
+	}
+
 	public static ChangesViewFragment newInstance(String query) {
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
 		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 2);
+		args.putString(QUERY, query);
+		fragment.setArguments(args);
+		return fragment;
+	}
+
+	public static ChangesViewFragment newInstance(String query, Type type) {
+		ChangesViewFragment fragment = new ChangesViewFragment();
+		Bundle args = new Bundle();
+		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal()+2);
+		args.putString(ARG_LIST_TYPE, type.name());
 		args.putString(QUERY, query);
 		fragment.setArguments(args);
 		return fragment;
@@ -90,7 +115,7 @@ public class ChangesViewFragment extends ListFragment {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		((HomeViewActivity) activity).onSectionAttached(2);
+		((HomeViewActivity) activity).onSectionAttached(getArguments().getInt(HomeViewActivity.ARG_SECTION_NUMBER));
 	}
 
 	@Override
@@ -128,6 +153,12 @@ public class ChangesViewFragment extends ListFragment {
 					this.params.setProject(getArguments().getString(QUERY).trim());
 
 					getActivity().getActionBar().setSubtitle(getArguments().getString(QUERY).trim());
+				}
+				if (getArguments().getString(ARG_LIST_TYPE) != null && getArguments().getString(ARG_LIST_TYPE).equals(Type.OUT.name())) {
+					this.params.setMy();
+				}
+				if (getArguments().getString(ARG_LIST_TYPE) != null && getArguments().getString(ARG_LIST_TYPE).equals(Type.IN.name())) {
+					this.params.setAssignedToMe();
 				}
 				client.get(this.params, new GerritClient.AsyncResponseHandler() {
 

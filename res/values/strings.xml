@@ -4,7 +4,8 @@
     <string name="app_name">Smart Gerrit</string>
     <string name="title_section1">Projects</string>
     <string name="title_section2">Changes</string>
-    <string name="title_section3">My</string>
+    <string name="title_section3">My outgoing</string>
+    <string name="title_section4">My incoming</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
