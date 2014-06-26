@@ -18,10 +18,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
 public class ChangesViewFragment extends ListFragment {
-	
+
 	public static enum Type {
 		ALL, OUT, IN
 	}
+
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -45,7 +46,7 @@ public class ChangesViewFragment extends ListFragment {
 	public static ChangesViewFragment newInstance(Type type) {
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
-		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal()+2);
+		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal() + 2);
 		args.putString(ARG_LIST_TYPE, type.name());
 		fragment.setArguments(args);
 		return fragment;
@@ -63,7 +64,7 @@ public class ChangesViewFragment extends ListFragment {
 	public static ChangesViewFragment newInstance(String query, Type type) {
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
-		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal()+2);
+		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal() + 2);
 		args.putString(ARG_LIST_TYPE, type.name());
 		args.putString(QUERY, query);
 		fragment.setArguments(args);
@@ -99,12 +100,11 @@ public class ChangesViewFragment extends ListFragment {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				//int loadedItems = firstVisibleItem + visibleItemCount;
-				//if ((loadedItems == totalItemCount) && !isLoading) {
-					// handler.post(new
-					// GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(CommitStatus.OPEN)));
+				int loadedItems = firstVisibleItem + visibleItemCount;
+				if ((loadedItems == totalItemCount) && !isLoading) {
+					handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider().setOffset(totalItemCount).setStatus(CommitStatus.OPEN)));
 
-				//}
+				}
 
 			}
 
@@ -128,9 +128,9 @@ public class ChangesViewFragment extends ListFragment {
 		ChangeModel clickedModel = adapter.getItem(position);
 
 		// TODO: add change Activity
-		//Intent intent = new Intent(getActivity(), ProjectActivity.class);
-		//intent.putExtra("id", clickedModel.getId());
-		//getActivity().startActivityForResult(intent, 1);
+		// Intent intent = new Intent(getActivity(), ProjectActivity.class);
+		// intent.putExtra("id", clickedModel.getId());
+		// getActivity().startActivityForResult(intent, 1);
 	}
 
 	private final Handler handler = new Handler();

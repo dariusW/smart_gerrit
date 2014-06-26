@@ -36,7 +36,7 @@ public class ChangesListAdapter extends ArrayAdapter<ChangeModel> {
 		} else {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			rowView = inflater.inflate(R.layout.projects_list_item_view,
+			rowView = inflater.inflate(R.layout.changes_list_item_view,
 					parent, false);
 
 			TextView desc = (TextView) rowView.findViewById(R.id.project_desc);
@@ -49,7 +49,7 @@ public class ChangesListAdapter extends ArrayAdapter<ChangeModel> {
 		}
 		ViewHolder tag = (ViewHolder) rowView.getTag();
 		if (tag != null) {
-			tag.name.setText(changes.get(position).getId());
+			tag.name.setText(changes.get(position).getSubject());
 			tag.desc.setText(changes.get(position).getProject());
 		}
 		return rowView;

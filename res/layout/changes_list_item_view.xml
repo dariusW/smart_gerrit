@@ -12,7 +12,7 @@
         android:layout_marginRight="6dip"
         android:contentDescription="@string/project"
         android:ellipsize="end"
-        android:src="@drawable/ic_action_copy" />
+        android:src="@drawable/ic_action_edit" />
 
     <TextView
         android:id="@+id/project_desc"
