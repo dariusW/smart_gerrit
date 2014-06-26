@@ -13,5 +13,7 @@
     <string name="project">Project</string>
     <string name="more">MORE</string>
     <string name="action_search">Search</string>
+    <string name="service_name">Smart Gerrit Notify</string>
+    <string name="action_kill">Kill service</string>
 
 </resources>

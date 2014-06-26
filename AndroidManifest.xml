@@ -38,6 +38,12 @@
             android:name="ProjectActivity"
             android:parentActivityName="HomeViewActivity" >
         </activity>
+
+        <service
+            android:name="NotificationService"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/service_name" >
+        </service>
     </application>
 
 </manifest>

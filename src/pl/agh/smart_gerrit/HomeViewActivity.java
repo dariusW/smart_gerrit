@@ -7,6 +7,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -59,6 +61,16 @@ public class HomeViewActivity extends Activity implements NavigationDrawerFragme
 			startActivityForResult(i, 0);
 		} else if (!isNetworkAvailable()) {
 			Toast.makeText(this, "Network not avaalable! Application wont work", Toast.LENGTH_LONG).show();
+		}
+
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			int id = extras.getInt(NotificationService.ARG_NOTIFICATION_ID);
+			if (id==NotificationService.CR_NOTIFY) {
+				NotificationManager myNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				myNotificationManager.cancel(id);
+				onNavigationDrawerItemSelected(3);
+			}
 		}
 
 	}
@@ -165,6 +177,17 @@ public class HomeViewActivity extends Activity implements NavigationDrawerFragme
 				}
 			});
 
+			killItem = menu.findItem(R.id.action_kill);
+			killItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					Intent i = new Intent(HomeViewActivity.this, NotificationService.class);
+					stopService(i);
+					return true;
+				}
+			});
+
 			return true;
 
 		}
@@ -199,6 +222,7 @@ public class HomeViewActivity extends Activity implements NavigationDrawerFragme
 	public static final String ARG_SECTION_NUMBER = "section_number";
 
 	private MenuItem searchItem;
+	private MenuItem killItem;
 
 	/**
 	 * A placeholder fragment containing a simple view.
