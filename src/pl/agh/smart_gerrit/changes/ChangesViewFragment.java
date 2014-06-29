@@ -24,7 +24,7 @@ public class ChangesViewFragment extends ListFragment {
 	public static enum Type {
 		ALL, OUT, IN
 	}
-	
+
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -45,8 +45,7 @@ public class ChangesViewFragment extends ListFragment {
 		return fragment;
 	}
 
-<<<<<<< HEAD
-	public static ChangesViewFragment newInstance(Type type) {
+	public static ChangesViewFragment newInstance( Type type ) {
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
 		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal() + 2);
@@ -55,10 +54,7 @@ public class ChangesViewFragment extends ListFragment {
 		return fragment;
 	}
 
-	public static ChangesViewFragment newInstance(String query) {
-=======
 	public static ChangesViewFragment newInstance( String query ) {
->>>>>>> Added activity with change info and list of files modified in this
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
 		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 2);
@@ -67,7 +63,7 @@ public class ChangesViewFragment extends ListFragment {
 		return fragment;
 	}
 
-	public static ChangesViewFragment newInstance(String query, Type type) {
+	public static ChangesViewFragment newInstance( String query, Type type ) {
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
 		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, type.ordinal() + 2);
@@ -106,24 +102,14 @@ public class ChangesViewFragment extends ListFragment {
 			}
 
 			@Override
-<<<<<<< HEAD
-			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				int loadedItems = firstVisibleItem + visibleItemCount;
-				if ((loadedItems == totalItemCount) && !isLoading) {
-					handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider().setOffset(totalItemCount).setStatus(CommitStatus.OPEN)));
-
-				}
-=======
 			public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount,
 					int totalItemCount ) {
-				// int loadedItems = firstVisibleItem + visibleItemCount;
-				// if ((loadedItems == totalItemCount) && !isLoading) {
-				// handler.post(new
-				// GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(CommitStatus.OPEN)));
+				int loadedItems = firstVisibleItem + visibleItemCount;
+				if ( (loadedItems == totalItemCount) && !isLoading ) {
+					handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider()
+							.setOffset(totalItemCount).setStatus(CommitStatus.OPEN)));
 
-				// }
->>>>>>> Added activity with change info and list of files modified in this
-
+				}
 			}
 
 		});
@@ -133,7 +119,8 @@ public class ChangesViewFragment extends ListFragment {
 	@Override
 	public void onAttach( Activity activity ) {
 		super.onAttach(activity);
-		((HomeViewActivity) activity).onSectionAttached(getArguments().getInt(HomeViewActivity.ARG_SECTION_NUMBER));
+		((HomeViewActivity) activity).onSectionAttached(getArguments().getInt(
+				HomeViewActivity.ARG_SECTION_NUMBER));
 	}
 
 	@Override
@@ -146,16 +133,9 @@ public class ChangesViewFragment extends ListFragment {
 	public void onListItemClick( ListView l, View v, int position, long id ) {
 		ChangeModel selectedChangeModel = adapter.getItem(position);
 
-<<<<<<< HEAD
-		// TODO: add change Activity
-		// Intent intent = new Intent(getActivity(), ProjectActivity.class);
-		// intent.putExtra("id", clickedModel.getId());
-=======
 		Intent intent = new Intent(getActivity(), ChangeActivity.class);
 		intent.putExtra(ChangeActivity.SELECTED_CHANGE_EXTRA, selectedChangeModel);
 		startActivity(intent);
->>>>>>> Added activity with change info and list of files modified in this
-		// getActivity().startActivityForResult(intent, 1);
 	}
 
 	private final Handler handler = new Handler();
@@ -180,10 +160,12 @@ public class ChangesViewFragment extends ListFragment {
 					getActivity().getActionBar()
 							.setSubtitle(getArguments().getString(QUERY).trim());
 				}
-				if (getArguments().getString(ARG_LIST_TYPE) != null && getArguments().getString(ARG_LIST_TYPE).equals(Type.OUT.name())) {
+				if ( getArguments().getString(ARG_LIST_TYPE) != null
+						&& getArguments().getString(ARG_LIST_TYPE).equals(Type.OUT.name()) ) {
 					this.params.setMy();
 				}
-				if (getArguments().getString(ARG_LIST_TYPE) != null && getArguments().getString(ARG_LIST_TYPE).equals(Type.IN.name())) {
+				if ( getArguments().getString(ARG_LIST_TYPE) != null
+						&& getArguments().getString(ARG_LIST_TYPE).equals(Type.IN.name()) ) {
 					this.params.setAssignedToMe();
 				}
 				client.get(this.params, new GerritClient.AsyncResponseHandler() {
