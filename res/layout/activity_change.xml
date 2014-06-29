@@ -101,10 +101,18 @@
 	</TableRow>
 
 	<fragment
-		    android:id="@+id/fragment1"
-		    android:name="pl.agh.smart_gerrit.changes.FileInfoListFragment"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    tools:layout="@android:layout/list_content" />
+	    android:id="@+id/fragment1"
+	    android:name="pl.agh.smart_gerrit.changes.FileInfoListFragment"
+	    android:layout_width="wrap_content"
+	    android:layout_height="300dp"
+	    android:layout_marginTop="5dp"
+	    tools:layout="@android:layout/list_content" />
+
+	<Button
+	    android:id="@+id/button1"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:onClick="review"
+	    android:text="Review" />
 	
 </TableLayout>

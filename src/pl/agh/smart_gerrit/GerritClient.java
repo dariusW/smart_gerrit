@@ -1,8 +1,11 @@
 package pl.agh.smart_gerrit;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -111,5 +114,41 @@ public class GerritClient {
 				handler.onFailure(status, header, content, e);
 			}
 		});
+	}
+
+	public void post( Context context, GerritClientQuery query, String jsonEntity,
+			String contentType, final AsyncResponseHandler handler )
+			throws UnsupportedEncodingException {
+
+		String subUrl = "";
+		for ( String part : query.getUrl() ) {
+			subUrl += part + "/";
+		}
+		String url = host + (useAuthentication ? AUTH_URL_SUFFIX : "") + "/" + subUrl;
+		Log.d("GerritClient", url);
+		Log.d("GerritClient", "Sending JSON: " + jsonEntity);
+
+		HttpEntity httpEntity = new StringEntity(jsonEntity);
+		client.post(context, url, (HttpEntity) httpEntity, contentType,
+				new AsyncHttpResponseHandler() {
+
+					@Override
+					public void onSuccess( String response ) {
+						if ( debug ) {
+							Log.i("GerritClient", response);
+						}
+						response = response.substring(5);
+						JsonParser jsonParser = new JsonParser();
+						JsonElement jsonElement = jsonParser.parse(response);
+
+						handler.onSuccess(jsonElement);
+					}
+
+					@Override
+					public void onFailure( int status, Header[] header, byte[] content, Throwable e ) {
+						handler.onFailure(status, header, content, e);
+					}
+				});
+
 	}
 }
