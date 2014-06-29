@@ -17,5 +17,6 @@
     <string name="action_kill">Kill service</string>
     <string name="title_activity_change">ChangeActivity</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_change_diff">ChangeDiffActivity</string>
 
 </resources>

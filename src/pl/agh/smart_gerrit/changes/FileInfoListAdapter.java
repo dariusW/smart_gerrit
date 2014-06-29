@@ -41,4 +41,13 @@ public class FileInfoListAdapter extends ArrayAdapter<FileInfoModel> {
 		fileInfoList.add(fileInfo);
 	}
 
+	@Override
+	public void clear() {
+		fileInfoList.clear();
+	}
+
+	public FileInfoModel get( int position ) {
+		return fileInfoList.get(position);
+	}
+
 }

@@ -2,4 +2,6 @@
 <resources>
     <color name="bg">#dedede</color>
     <color name="white">#ffffff</color>
+    <color name="diffDelete">#ee8181</color>
+    <color name="diffAdd">#71eb90</color>
 </resources>

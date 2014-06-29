@@ -22,7 +22,7 @@ public class ChangeActivity extends Activity {
 		ChangeModel changeModel = (ChangeModel) intent.getSerializableExtra(SELECTED_CHANGE_EXTRA);
 		this.changeModel = changeModel;
 
-		// TODO: extract info from changeModel and display it
+		// TODO: extract info from fileInfoModel and display it
 		TextView textView = (TextView) findViewById(R.id.changeProjectTextView);
 		textView.setText(changeModel.getProject());
 
