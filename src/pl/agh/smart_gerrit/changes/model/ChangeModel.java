@@ -1,11 +1,12 @@
 package pl.agh.smart_gerrit.changes.model;
 
+import java.io.Serializable;
 import java.net.URLDecoder;
 
 import com.google.gson.annotations.Expose;
 
+public class ChangeModel implements Serializable {
 
-public class ChangeModel {
 	@Expose
 	private String kind;
 	@Expose
@@ -38,132 +39,131 @@ public class ChangeModel {
 	private Owner owner;
 
 	public String getKind() {
-	return kind;
+		return kind;
 	}
 
-	public void setKind(String kind) {
-	this.kind = kind;
+	public void setKind( String kind ) {
+		this.kind = kind;
 	}
 
 	public String getId() {
-	return decode(id);
+		return decode(id);
 	}
 
-	public void setId(String id) {
-	this.id = id;
+	public void setId( String id ) {
+		this.id = id;
 	}
 
 	public String getProject() {
-	return decode(project);
+		return decode(project);
 	}
 
-	public void setProject(String project) {
-	this.project = project;
+	public void setProject( String project ) {
+		this.project = project;
 	}
 
 	public String getBranch() {
-	return branch;
+		return branch;
 	}
 
-	public void setBranch(String branch) {
-	this.branch = branch;
+	public void setBranch( String branch ) {
+		this.branch = branch;
 	}
 
 	public String getChange_id() {
-	return change_id;
+		return change_id;
 	}
 
-	public void setChange_id(String change_id) {
-	this.change_id = change_id;
+	public void setChange_id( String change_id ) {
+		this.change_id = change_id;
 	}
 
 	public String getSubject() {
-	return subject;
+		return subject;
 	}
 
-	public void setSubject(String subject) {
-	this.subject = subject;
+	public void setSubject( String subject ) {
+		this.subject = subject;
 	}
 
 	public String getStatus() {
-	return status;
+		return status;
 	}
 
-	public void setStatus(String status) {
-	this.status = status;
+	public void setStatus( String status ) {
+		this.status = status;
 	}
 
 	public String getCreated() {
-	return created;
+		return created;
 	}
 
-	public void setCreated(String created) {
-	this.created = created;
+	public void setCreated( String created ) {
+		this.created = created;
 	}
 
 	public String getUpdated() {
-	return updated;
+		return updated;
 	}
 
-	public void setUpdated(String updated) {
-	this.updated = updated;
+	public void setUpdated( String updated ) {
+		this.updated = updated;
 	}
 
 	public Boolean getMergeable() {
-	return mergeable;
+		return mergeable;
 	}
 
-	public void setMergeable(Boolean mergeable) {
-	this.mergeable = mergeable;
+	public void setMergeable( Boolean mergeable ) {
+		this.mergeable = mergeable;
 	}
 
 	public Integer getInsertions() {
-	return insertions;
+		return insertions;
 	}
 
-	public void setInsertions(Integer insertions) {
-	this.insertions = insertions;
+	public void setInsertions( Integer insertions ) {
+		this.insertions = insertions;
 	}
 
 	public Integer getDeletions() {
-	return deletions;
+		return deletions;
 	}
 
-	public void setDeletions(Integer deletions) {
-	this.deletions = deletions;
+	public void setDeletions( Integer deletions ) {
+		this.deletions = deletions;
 	}
 
 	public String get_sortkey() {
-	return _sortkey;
+		return _sortkey;
 	}
 
-	public void set_sortkey(String _sortkey) {
-	this._sortkey = _sortkey;
+	public void set_sortkey( String _sortkey ) {
+		this._sortkey = _sortkey;
 	}
 
 	public Integer get_number() {
-	return _number;
+		return _number;
 	}
 
-	public void set_number(Integer _number) {
-	this._number = _number;
+	public void set_number( Integer _number ) {
+		this._number = _number;
 	}
 
 	public Owner getOwner() {
-	return owner;
+		return owner;
 	}
 
-	public void setOwner(Owner owner) {
-	this.owner = owner;
+	public void setOwner( Owner owner ) {
+		this.owner = owner;
 	}
-	
 
-	private static String decode(String encodecTxt) {
-		if (encodecTxt == null)
+	private static String decode( String encodecTxt ) {
+		if ( encodecTxt == null )
 			return encodecTxt;
 		try {
 			return URLDecoder.decode(encodecTxt, "UTF-8");
-		} catch (Exception e) {
+		} catch ( Exception e ) {
 			return encodecTxt;
 		}
 

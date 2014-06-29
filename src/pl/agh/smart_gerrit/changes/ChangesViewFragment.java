@@ -1,10 +1,12 @@
 package pl.agh.smart_gerrit.changes;
 
+import pl.agh.smart_gerrit.ChangeActivity;
 import pl.agh.smart_gerrit.GerritClient;
 import pl.agh.smart_gerrit.HomeViewActivity;
 import pl.agh.smart_gerrit.changes.model.ChangeModel;
 import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,7 +24,7 @@ public class ChangesViewFragment extends ListFragment {
 	public static enum Type {
 		ALL, OUT, IN
 	}
-
+	
 	/**
 	 * The fragment argument representing the section number for this fragment.
 	 */
@@ -43,6 +45,7 @@ public class ChangesViewFragment extends ListFragment {
 		return fragment;
 	}
 
+<<<<<<< HEAD
 	public static ChangesViewFragment newInstance(Type type) {
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
@@ -53,6 +56,9 @@ public class ChangesViewFragment extends ListFragment {
 	}
 
 	public static ChangesViewFragment newInstance(String query) {
+=======
+	public static ChangesViewFragment newInstance( String query ) {
+>>>>>>> Added activity with change info and list of files modified in this
 		ChangesViewFragment fragment = new ChangesViewFragment();
 		Bundle args = new Bundle();
 		args.putInt(HomeViewActivity.ARG_SECTION_NUMBER, 2);
@@ -78,7 +84,7 @@ public class ChangesViewFragment extends ListFragment {
 	private ChangesListAdapter adapter;
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
+	public void onCreate( Bundle savedInstanceState ) {
 		adapter = new ChangesListAdapter(getActivity(), getId());
 		setListAdapter(adapter);
 		client = GerritClient.getInstance(getActivity());
@@ -88,23 +94,35 @@ public class ChangesViewFragment extends ListFragment {
 	@Override
 	public void onStart() {
 
-		if (!isLoading)
-			handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(CommitStatus.OPEN)));
+		if ( !isLoading )
+			handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(
+					CommitStatus.OPEN)));
 
 		getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
 
 			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
+			public void onScrollStateChanged( AbsListView view, int scrollState ) {
 
 			}
 
 			@Override
+<<<<<<< HEAD
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				int loadedItems = firstVisibleItem + visibleItemCount;
 				if ((loadedItems == totalItemCount) && !isLoading) {
 					handler.post(new GetChangeTask(ChangesQueryBuilder.getBuider().setOffset(totalItemCount).setStatus(CommitStatus.OPEN)));
 
 				}
+=======
+			public void onScroll( AbsListView view, int firstVisibleItem, int visibleItemCount,
+					int totalItemCount ) {
+				// int loadedItems = firstVisibleItem + visibleItemCount;
+				// if ((loadedItems == totalItemCount) && !isLoading) {
+				// handler.post(new
+				// GetChangeTask(ChangesQueryBuilder.getBuider().setStatus(CommitStatus.OPEN)));
+
+				// }
+>>>>>>> Added activity with change info and list of files modified in this
 
 			}
 
@@ -113,23 +131,30 @@ public class ChangesViewFragment extends ListFragment {
 	}
 
 	@Override
-	public void onAttach(Activity activity) {
+	public void onAttach( Activity activity ) {
 		super.onAttach(activity);
 		((HomeViewActivity) activity).onSectionAttached(getArguments().getInt(HomeViewActivity.ARG_SECTION_NUMBER));
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView( LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState ) {
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		ChangeModel clickedModel = adapter.getItem(position);
+	public void onListItemClick( ListView l, View v, int position, long id ) {
+		ChangeModel selectedChangeModel = adapter.getItem(position);
 
+<<<<<<< HEAD
 		// TODO: add change Activity
 		// Intent intent = new Intent(getActivity(), ProjectActivity.class);
 		// intent.putExtra("id", clickedModel.getId());
+=======
+		Intent intent = new Intent(getActivity(), ChangeActivity.class);
+		intent.putExtra(ChangeActivity.SELECTED_CHANGE_EXTRA, selectedChangeModel);
+		startActivity(intent);
+>>>>>>> Added activity with change info and list of files modified in this
 		// getActivity().startActivityForResult(intent, 1);
 	}
 
@@ -141,18 +166,19 @@ public class ChangesViewFragment extends ListFragment {
 
 		private final ChangesQueryBuilder.Query params;
 
-		public GetChangeTask(ChangesQueryBuilder.Query params) {
+		public GetChangeTask( ChangesQueryBuilder.Query params ) {
 			this.params = params;
 		}
 
 		@Override
 		public void run() {
-			if (!isLoading) {
+			if ( !isLoading ) {
 				isLoading = true;
-				if (getArguments().getString(QUERY) != null) {
+				if ( getArguments().getString(QUERY) != null ) {
 					this.params.setProject(getArguments().getString(QUERY).trim());
 
-					getActivity().getActionBar().setSubtitle(getArguments().getString(QUERY).trim());
+					getActivity().getActionBar()
+							.setSubtitle(getArguments().getString(QUERY).trim());
 				}
 				if (getArguments().getString(ARG_LIST_TYPE) != null && getArguments().getString(ARG_LIST_TYPE).equals(Type.OUT.name())) {
 					this.params.setMy();
@@ -163,11 +189,12 @@ public class ChangesViewFragment extends ListFragment {
 				client.get(this.params, new GerritClient.AsyncResponseHandler() {
 
 					@Override
-					public void onSuccess(JsonElement json) {
+					public void onSuccess( JsonElement json ) {
 						Gson gson = new Gson();
 
-						for (JsonElement changeObject : json.getAsJsonArray()) {
-							ChangeModel model = gson.fromJson(changeObject.getAsJsonObject(), ChangeModel.class);
+						for ( JsonElement changeObject : json.getAsJsonArray() ) {
+							ChangeModel model = gson.fromJson(changeObject.getAsJsonObject(),
+									ChangeModel.class);
 							adapter.add(model);
 
 						}

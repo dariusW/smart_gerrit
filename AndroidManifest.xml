@@ -44,6 +44,11 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_name" >
         </service>
+
+        <activity
+            android:name="pl.agh.smart_gerrit.ChangeActivity"
+            android:label="@string/title_activity_change" >
+        </activity>
     </application>
 
 </manifest>

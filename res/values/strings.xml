@@ -15,5 +15,7 @@
     <string name="action_search">Search</string>
     <string name="service_name">Smart Gerrit Notify</string>
     <string name="action_kill">Kill service</string>
+    <string name="title_activity_change">ChangeActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
