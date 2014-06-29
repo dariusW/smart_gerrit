@@ -32,7 +32,8 @@
 	     <TextView
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:text="Branch:" />
+	        android:text="Branch:"
+	        android:maxWidth="2dp" />
 
 	     <TextView
 	         android:id="@+id/changeBranchTextView"
@@ -99,14 +100,11 @@
      
 	</TableRow>
 
-	<TableRow android:paddingTop="5dp" >
-
-		<fragment
+	<fragment
 		    android:id="@+id/fragment1"
 		    android:name="pl.agh.smart_gerrit.changes.FileInfoListFragment"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    tools:layout="@android:layout/list_content" />
-    </TableRow>
 	
 </TableLayout>
