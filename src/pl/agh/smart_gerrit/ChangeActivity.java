@@ -135,7 +135,7 @@ public class ChangeActivity extends Activity {
 					urlPartList.add(changeModel.getId().replace("/", "%2F"));
 					urlPartList.add("revisions");
 					urlPartList.add("current");
-					urlPartList.add("reviewPosition");
+					urlPartList.add("review");
 					return urlPartList;
 				}
 
@@ -145,7 +145,9 @@ public class ChangeActivity extends Activity {
 				}
 			};
 
-			ReviewInput reviewInput = new ReviewInput(params[0]);
+			String reviewNote = params[0];
+			String verified = "+2".equals(reviewNote) ? "+1" : "0";
+			ReviewInput reviewInput = new ReviewInput(reviewNote, verified);
 			Gson gson = new Gson();
 
 			try {

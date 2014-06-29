@@ -9,8 +9,8 @@ public class ReviewInput {
 	@SerializedName ( "labels" )
 	private CodeReview codeReview;
 
-	public ReviewInput( String review ) {
-		codeReview = new CodeReview(review);
+	public ReviewInput( String review, String verified ) {
+		codeReview = new CodeReview(review, verified);
 	}
 
 }
