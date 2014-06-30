@@ -26,7 +26,9 @@ public class FileInfoListAdapter extends ArrayAdapter<FileInfoModel> {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		TextView rowView = (TextView) inflater.inflate(R.layout.simple_list_item_1, parent, false);
-		rowView.setText("File:" + fileInfoList.get(position).getFileName());
+		FileInfoModel fileInfo = fileInfoList.get(position);
+		String status = fileInfo.getStatus() != null ? fileInfo.getStatus() : "M";
+		rowView.setText("[" + status + "] " + fileInfo.getFileName());
 		rowView.setBackgroundColor(context.getResources().getColor(R.color.black));
 		return rowView;
 	}
