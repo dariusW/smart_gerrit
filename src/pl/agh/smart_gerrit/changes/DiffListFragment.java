@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import pl.agh.smart_gerrit.ChangeActivity;
 import pl.agh.smart_gerrit.ChangeDiffActivity;
 import pl.agh.smart_gerrit.GerritClient;
 import pl.agh.smart_gerrit.GerritClient.AsyncResponseHandler;
@@ -18,8 +19,12 @@ import pl.agh.smart_gerrit.changes.model.DiffType;
 import pl.agh.smart_gerrit.changes.model.FileInfoModel;
 import android.R;
 import android.app.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -106,6 +111,15 @@ public class DiffListFragment extends ListFragment {
 				}
 			});
 		}
+	}
+	
+
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Diff diff = adapter.getItem(position);
+
+		Toast.makeText(getActivity(), DiffAnalizator.comment(diff), Toast.LENGTH_LONG).show();
 	}
 
 }

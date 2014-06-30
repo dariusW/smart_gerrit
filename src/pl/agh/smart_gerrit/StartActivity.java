@@ -99,10 +99,13 @@ public class StartActivity extends Activity {
 							Intent i = new Intent(StartActivity.this, NotificationService.class);   
 					        startService(i);  
 							
+
+					        
 							Intent intent = new Intent(StartActivity.this,
 									HomeViewActivity.class);
 							startActivity(intent);
 
+							enableGUI(true);
 						}
 
 						@Override

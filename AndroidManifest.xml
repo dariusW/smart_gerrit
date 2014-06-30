@@ -46,11 +46,11 @@
         </service>
 
         <activity
-            android:name=".ChangeActivity"
+            android:name="ChangeActivity"
             android:label="@string/title_activity_change" >
         </activity>
         <activity
-            android:name=".ChangeDiffActivity"
+            android:name="ChangeDiffActivity"
             android:label="@string/title_activity_change_diff" >
         </activity>
     </application>
